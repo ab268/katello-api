@@ -67,10 +67,6 @@ public class HammerCli implements KatelloConstants {
 
 	public SSHCommandResult runExt(String cmdTail){
 		String cmd = "/usr/bin/hammer --output base"; //the output we all know from katello cli ;)
-		for(int i=0;i<this.opts.size();i++){
-			if(this.opts.get(i).getValue()!=null)
-				cmd = cmd + " --" + opts.get(i).getName()+" \""+opts.get(i).getValue().toString()+"\"";
-		}
 		
 		String locale = System.getProperty("katello.locale", KATELLO_DEFAULT_LOCALE);
 		for(int i=0;i<this.args.size();i++){
@@ -78,6 +74,11 @@ public class HammerCli implements KatelloConstants {
 		}
 		
 		cmd = "export LANG=" + locale + "; " + CMD_PY_COVERAGE + " " + cmd + " " + this.command;
+		for(int i=0;i<this.opts.size();i++){
+			if(this.opts.get(i).getValue()!=null)
+				cmd = cmd + " --" + opts.get(i).getName()+" \""+opts.get(i).getValue().toString()+"\"";
+		}
+		
 		try {
 			return KatelloUtils.sshOnClient(hostName, cmd+cmdTail);
 		}

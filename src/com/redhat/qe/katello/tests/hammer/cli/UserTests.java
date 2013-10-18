@@ -62,7 +62,8 @@ public class UserTests extends KatelloCliTestBase {
 		HammerUser usr = new HammerUser(cli_worker, login, password, mail);
 		exec_result = usr.list(login, null, null);
 		Assert.assertTrue(exec_result.getExitCode() == 0, "Check - return code");
-		id = getID("LOGIN", login, getOutput(exec_result));
+		String outputBlock = KatelloUtils.grepOutBlock("Login", login, getOutput(exec_result));
+		id = KatelloUtils.grepCLIOutput("Id", outputBlock);
 		usr.setId(new Long(id));
 		assert_UserInfo(usr);
 		//verify multiple login info exists
@@ -71,7 +72,8 @@ public class UserTests extends KatelloCliTestBase {
 		usr.lastName = "user";
 		exec_result = usr.list(newLogin, null, null);
 		Assert.assertTrue(exec_result.getExitCode() == 0, "Check - return code");
-		newId = getID("LOGIN", newLogin, getOutput(exec_result));
+		outputBlock = KatelloUtils.grepOutBlock("Login", newLogin, getOutput(exec_result));
+		newId = KatelloUtils.grepCLIOutput("Id", outputBlock);
 		usr.setId(new Long(newId));
 		assert_UserInfo(usr);
 	}
@@ -86,7 +88,9 @@ public class UserTests extends KatelloCliTestBase {
 		usr.lastName = "newLName-"+uid;
 		usr.mail = "new-"+mail;
 		exec_result = usr.list(login, null, null);
-		usr.setId(new Long(getID("LOGIN", login, getOutput(exec_result))));
+		String outputBlock = KatelloUtils.grepOutBlock("Login", login, getOutput(exec_result));
+		id = KatelloUtils.grepCLIOutput("Id", outputBlock);
+		usr.setId(new Long(id));
 		exec_result = usr.update();
 		Assert.assertTrue(exec_result.getExitCode() == 0, "Check - return code");
 		Assert.assertTrue(getOutput(exec_result).contains(HammerUser.HAMMER_OUT_UPDATE), "Check - returned output string");
