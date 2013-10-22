@@ -62,12 +62,13 @@ public class PackageTests extends KatelloCliLongrunBase {
 		KatelloRepo repo = new KatelloRepo(this.cli_worker, KatelloRepo.RH_REPO_RHEL6_SERVER_RPMS_64BIT, base_org_name, KatelloProduct.RHEL_SERVER, null, null, null);
 
 		exec_result = repo.status();
-		this.repoSynced = !getOutput(exec_result).equals("Not synced");
+		this.repoSynced = !KatelloUtils.grepCLIOutput("Last Sync", getOutput(exec_result)).equals("never");
 		if(!repoSynced){
 			exec_result = repo.synchronize();
 			Assert.assertTrue(exec_result.getExitCode().intValue()==0, "Check - return code (repo synchronize)");
 		}
-		exec_result = repo.info();
+		waitfor_packagecount(repo, 10);
+		exec_result = repo.status();
 		Assert.assertFalse(KatelloUtils.grepCLIOutput("Package Count", getOutput(exec_result)).equals("0"), "Check - package count is NOT 0");
 		
 		exec_result = new KatelloOrg(this.cli_worker, base_org_name, null).subscriptions();
