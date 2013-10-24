@@ -42,9 +42,33 @@ public class HammerCli implements KatelloConstants {
 		if(this.opts==null) this.opts = new ArrayList<Attribute>();
 	}
 	
-	public HammerCli(String command,ArrayList<Attribute> options, HammerUser user, String hostName){
+//	public HammerCli(String command,ArrayList<Attribute> options, HammerUser user, String hostName){
+//		this.command = command;
+//		this.args = new ArrayList<Attribute>();
+//		
+//		if (user != null) {
+//			if(user.getUsername()!=null)
+//				this.args.add(new Attribute("username", user.username));
+//			if(user.getPassword()!=null)
+//				this.args.add(new Attribute("password", user.password));
+//		} else {	
+//			// @ TODO disable for now as hammer uses default user credentials from internal config file
+////			this.args.add(new Attribute("username", System.getProperty("hammer.admin.user", HammerUser.DEFAULT_ADMIN_USER)));
+////			this.args.add(new Attribute("password", System.getProperty("hammer.admin.password", HammerUser.DEFAULT_ADMIN_PASS)));
+//		}
+//		this.hostName = hostName;
+//		this.opts = options;
+//		if(this.opts==null) this.opts = new ArrayList<Attribute>();
+//	}
+//	
+	public HammerCli(String command,
+			ArrayList<Attribute> options, ArrayList<Attribute> args, 
+			HammerUser user, String hostName){
+		this.hostName = hostName;
 		this.command = command;
-		this.args = new ArrayList<Attribute>();
+		this.args = args;
+		this.opts = options;
+		if(this.opts==null) this.opts = new ArrayList<Attribute>();
 		
 		if (user != null) {
 			if(user.getUsername()!=null)
@@ -56,11 +80,8 @@ public class HammerCli implements KatelloConstants {
 //			this.args.add(new Attribute("username", System.getProperty("hammer.admin.user", HammerUser.DEFAULT_ADMIN_USER)));
 //			this.args.add(new Attribute("password", System.getProperty("hammer.admin.password", HammerUser.DEFAULT_ADMIN_PASS)));
 		}
-		this.hostName = hostName;
-		this.opts = options;
-		if(this.opts==null) this.opts = new ArrayList<Attribute>();
 	}
-	
+
 	public SSHCommandResult run(){
 		return runExt("");
 	}
@@ -69,16 +90,13 @@ public class HammerCli implements KatelloConstants {
 		String cmd = "/usr/bin/hammer --output base"; //the output we all know from katello cli ;)
 		
 		String locale = System.getProperty("katello.locale", KATELLO_DEFAULT_LOCALE);
-		for(int i=0;i<this.args.size();i++){
-			cmd = cmd + " --" + args.get(i).getName()+" \""+args.get(i).getValue().toString()+"\"";
-		}
-		
 		cmd = "export LANG=" + locale + "; " + CMD_PY_COVERAGE + " " + cmd + " " + this.command;
-		for(int i=0;i<this.opts.size();i++){
-			if(this.opts.get(i).getValue()!=null)
-				cmd = cmd + " --" + opts.get(i).getName()+" \""+opts.get(i).getValue().toString()+"\"";
-		}
 		
+		for(int i=0;i<this.args.size();i++){
+			if(args.get(i).getValue()!=null) // else skip adding as command argument
+				cmd = cmd + " --" + args.get(i).getName()+" \""+args.get(i).getValue().toString()+"\"";
+		}
+
 		try {
 			return KatelloUtils.sshOnClient(hostName, cmd+cmdTail);
 		}
