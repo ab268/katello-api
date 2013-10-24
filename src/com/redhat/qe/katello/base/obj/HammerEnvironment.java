@@ -8,7 +8,7 @@ import com.redhat.qe.katello.base.threading.KatelloCliWorker;
 import com.redhat.qe.tools.SSHCommandResult;
 
 public class HammerEnvironment extends _HammerObject {
-	protected static Logger log = Logger.getLogger(HammerArchitecture.class.getName());
+	protected static Logger log = Logger.getLogger(HammerEnvironment.class.getName());
 	
 	// ** ** ** ** ** ** ** Public constants
 	public static final String CMD_LIST = "environment list";
