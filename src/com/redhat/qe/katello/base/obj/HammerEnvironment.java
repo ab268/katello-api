@@ -47,54 +47,64 @@ public class HammerEnvironment extends _HammerObject {
 	    this.name = name;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public SSHCommandResult cli_create() {
+	public SSHCommandResult cli_create(){		
 		args.clear();
 		args.add(new Attribute("name", this.name));
 		return run(CMD_CREATE);
 	}
 	
-	public SSHCommandResult cli_info(String id) {
+	public SSHCommandResult cli_info(){
 		args.clear();
-		args.add(new Attribute("id", id));
 		args.add(new Attribute("name", this.name));
 		return run(CMD_INFO);
 	}
 	
-	public SSHCommandResult update(String newName) {
+	public SSHCommandResult cli_list(){
 		args.clear();
-		args.add(new Attribute("name", this.name));
-		args.add(new Attribute("new-name", newName));
-		return run(CMD_UPDATE);
+		return run(CMD_LIST);
+	}
+
+	public SSHCommandResult cli_search(String search){
+		args.clear();
+		args.add(new Attribute("search", search));
+		return run(CMD_LIST);
 	}
 	
-	public SSHCommandResult cli_list(String searchStr, String order, String page) {
+	public SSHCommandResult cli_list(String order, Integer page, Integer per_page){
+		args.clear();
+		args.add(new Attribute("order", order));
+		args.add(new Attribute("page", page));
+		args.add(new Attribute("per-page", per_page));
+		return run(CMD_LIST);
+	}
+	
+	public SSHCommandResult cli_list(String searchStr, String order, String page, Integer per_page) {
 		args.clear();
 		args.add(new Attribute("search", searchStr));
 		args.add(new Attribute("order", order));
 		args.add(new Attribute("page", page));
+		args.add(new Attribute("per-page", per_page));
 		return run(CMD_LIST);
 	}
 	
-	public SSHCommandResult delete(String id) {
+	public SSHCommandResult update(String new_name){
 		args.clear();
-		if(id != null)
-		{
-			args.add(new Attribute("id", id));
-		}
-		else
-		{
+		args.add(new Attribute("name", this.name));
+		args.add(new Attribute("new-name", new_name));
+		return run(CMD_UPDATE);
+	}
+
+	public SSHCommandResult delete() {
+		args.clear();
+		if (this.id != null) {
+			args.add(new Attribute("id", this.id));	
+		} else {
 			args.add(new Attribute("name", this.name));
 		}
 		return run(CMD_DELETE);
 	}
-	
-	
+
+	// ** ** ** ** ** ** **
+	// ASSERTS
+	// ** ** ** ** ** ** **
 }

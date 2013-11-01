@@ -17,7 +17,6 @@ import com.redhat.qe.katello.base.obj.KatelloSystemGroup;
 import com.redhat.qe.katello.common.KatelloUtils;
 import com.redhat.qe.tools.SSHCommandResult;
 
-@Test(groups={"cfse-cli"})
 public class ErrataTests extends KatelloCliLongrunBase {
 	
 	private String ert1;
@@ -211,6 +210,7 @@ public class ErrataTests extends KatelloCliLongrunBase {
 		sshOnClient("sed -i -e \"s/certFrequency.*/certFrequency = 1/\" /etc/rhsm/rhsm.conf");
 		sshOnClient("service rhsmcertd restart");
 		yum_clean();
-		sshOnClient("service goferd restart;");		
+		sshOnClient("service goferd restart;");	
+		try { Thread.sleep(30000); } catch (Exception ex) {}
 	}
 }

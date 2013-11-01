@@ -15,11 +15,13 @@ import com.redhat.qe.katello.base.obj.KatelloEnvironment;
 import com.redhat.qe.katello.base.obj.KatelloOrg;
 import com.redhat.qe.katello.base.obj.KatelloUser;
 import com.redhat.qe.katello.base.obj.KatelloUserRole;
+import com.redhat.qe.katello.base.tngext.TngPriority;
 import com.redhat.qe.katello.common.KatelloUtils;
 import com.redhat.qe.katello.common.TngRunGroups;
 import com.redhat.qe.tools.SSHCommandResult;
 
-@Test(groups={"cfse-cli",TngRunGroups.TNG_KATELLO_Users_Roles})
+@TngPriority(36)
+@Test(groups={TngRunGroups.TNG_KATELLO_Users_Roles})
 public class UserTests extends KatelloCliTestBase{
 	
 	List<KatelloUser> users;
@@ -29,7 +31,7 @@ public class UserTests extends KatelloCliTestBase{
 	private String env;
 	private String env2;
 	
-	@BeforeClass(description="init: create org stuff", groups={"cfse-cli","headpin-cli"})
+	@BeforeClass(description="init: create org stuff", groups={"headpin-cli"})
 	public void setUp(){
 		SSHCommandResult res;
 		this.organization = "org-"+uid;
@@ -48,7 +50,7 @@ public class UserTests extends KatelloCliTestBase{
 		res = env.cli_create();
 	}
 
-	@BeforeClass(description="init: katello specific, no headpin", dependsOnMethods={"setUp"}, groups={"cfse-cli"})
+	@BeforeClass(description="init: katello specific, no headpin", dependsOnMethods={"setUp"})
 	public void setUp_katelloOnly(){
 		this.env = "ak-"+uid;
 		SSHCommandResult exec_result = new KatelloEnvironment(this.cli_worker, this.env, null, organization, KatelloEnvironment.LIBRARY).cli_create();

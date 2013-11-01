@@ -3,6 +3,7 @@ package com.redhat.qe.katello.tests.cli;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import com.redhat.qe.Assert;
 import com.redhat.qe.katello.base.KatelloCliDataProvider;
 import com.redhat.qe.katello.base.KatelloCliTestBase;
@@ -11,10 +12,12 @@ import com.redhat.qe.katello.base.obj.KatelloOrg;
 import com.redhat.qe.katello.base.obj.KatelloProduct;
 import com.redhat.qe.katello.base.obj.KatelloProvider;
 import com.redhat.qe.katello.base.obj.KatelloRepo;
+import com.redhat.qe.katello.base.tngext.TngPriority;
 import com.redhat.qe.katello.common.KatelloUtils;
 import com.redhat.qe.katello.common.TngRunGroups;
 import com.redhat.qe.tools.SSHCommandResult;
 
+@TngPriority(28)
 @Test(groups={TngRunGroups.TNG_KATELLO_Providers_Repos})
 public class ProviderTests extends KatelloCliTestBase{
 	private String org_name;
@@ -660,6 +663,9 @@ public class ProviderTests extends KatelloCliTestBase{
 			exec_result = prov.import_manifest("/tmp/"+MANIFEST_MANIFEST_ZIP, true);
 			Assert.assertTrue(exec_result.getExitCode()==0, "Check exit code (import manifest)");
 			Assert.assertTrue(getOutput(exec_result).contains(KatelloProvider.OUT_MANIFEST_IMPORTED), "Check output (import manifest)");
+			exec_result = prov.refresh_manifest();
+			Assert.assertTrue(exec_result.getExitCode() == 0, "Check - return code");
+			Assert.assertTrue(getOutput(exec_result).trim().contains(KatelloProvider.OUT_MANIFEST_REFRESH), "Check output");
 		}finally{
 			new KatelloOrg(cli_worker, org, null).delete(); // remove the org with manifest. Let manifest be reused
 		}

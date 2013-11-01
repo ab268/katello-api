@@ -49,7 +49,7 @@ public class KatelloSystem extends _KatelloObject{
 	public static final String RHSM_ENVIRONMENTS ="subscription-manager environments --username %s --password %s";
 	
 	public static final String OUT_CREATE = 
-			"The system has been registered with ID:";
+			"The system has been registered with"; // TODO - add back the " ID:" when the good times come :P RHSM changes so much
 	public static final String ERR_RHSM_LOBRARY_ONLY = 
 			"Organization %s has the '%s' environment only. Please create an environment for system registration.";
 	public static final String ERR_RHSM_REG_ALREADY_FORCE_NEEDED = 
@@ -89,7 +89,7 @@ public class KatelloSystem extends _KatelloObject{
 	public static final String OUT_REMOVE_CUSTOM_INFO =
 			"Successfully removed Custom Information from System [ %s ]";
 	public static final String OUT_RHSM_REGISTERED_OK = 
-			"The system has been registered with id:";
+			"The system has been registered with ID:";
 	public static final String OUT_LIST_PACKAGES = "Package Information for System [ %s ] in Org [ %s ]";
 	public static final String OUT_ADD_TO_GROUPS = "Successfully added system groups to system [ %s ]";
 	public static final String OUT_REMOVE_FROM_GROUPS = "Successfully removed system groups from system [ %s ]";
@@ -102,7 +102,7 @@ public class KatelloSystem extends _KatelloObject{
 	public static final String API_CMD_GET_SERIALS = "/consumers/%s/certificates/serials";
 	
 	//Very sensitive regexp is used here for matching exact subscription in list.
-	public static final String REG_SUBSCRIPTION = "Subscription Name\\s*:\\s+%s\\s+SKU\\s*:\\s+\\w{5,15}+\\s+Pool Id\\s*:\\s+\\w{32}+\\s+Quantity\\s*:\\s+%s";
+	public static final String REG_SUBSCRIPTION = "Subscription Name\\s*:\\s+%s\\s+Provides\\s*:\\s+Red Hat Beta Red Hat Enterprise Linux Server\\s*SKU\\s*:\\s+\\w{5,15}+\\s+Pool ID\\s*:\\s+\\w{32}+\\s+Available\\s*:\\s+%s";
 	public static final String REG_SUBSCRIPTION_CFSE = "Product\\s+Name\\s*:\\s*%s\\s+Product\\s+Id\\s*:\\s*\\w{5,15}\\s+Pool\\s+Id\\s*:\\s*\\w{32}+\\s+Quantity\\s*:\\s*%s";
 	public static final String REG_POOL_ID = "\\s+\\w{32}+\\s+";
 	public static final String REG_SYSTEM_INFO = ".*Name\\s*:\\s+%s.*IPv4 Address\\s*:\\s+\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*UUID\\s*:\\s+\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}.*Location\\s*:\\s+%s.*Description\\s*:\\s+%s.*";
@@ -458,7 +458,8 @@ public class KatelloSystem extends _KatelloObject{
 		if(this.org != null)
 			cmd += " --org \""+this.org+"\"";
 
-		if (KatelloConstants.KATELLO_PRODUCT.equals("katello") || KatelloConstants.KATELLO_PRODUCT.equals("headpin")) {
+		if (KatelloConstants.KATELLO_PRODUCT.equals("katello") || KatelloConstants.KATELLO_PRODUCT.equals("headpin")
+				|| KatelloConstants.KATELLO_PRODUCT.equals("sat6")) {
 			cmd += " | grep \"Serial ID\" | wc -l";	
 		} else {
 			cmd += " | grep \"Serial Id\" | wc -l";

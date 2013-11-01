@@ -1,8 +1,10 @@
 package com.redhat.qe.katello.tests.cli;
 
 import java.util.logging.Logger;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import com.redhat.qe.Assert;
 import com.redhat.qe.katello.base.KatelloCliTestBase;
 import com.redhat.qe.katello.base.obj.KatelloPackageGroup;
@@ -10,11 +12,13 @@ import com.redhat.qe.katello.base.obj.KatelloProduct;
 import com.redhat.qe.katello.base.obj.KatelloProvider;
 import com.redhat.qe.katello.base.obj.KatelloRepo;
 import com.redhat.qe.katello.base.obj.KatelloUser;
+import com.redhat.qe.katello.base.tngext.TngPriority;
 import com.redhat.qe.katello.common.KatelloUtils;
 import com.redhat.qe.katello.common.TngRunGroups;
 import com.redhat.qe.tools.SSHCommandResult;
 
-@Test(groups={"cfse-cli",TngRunGroups.TNG_KATELLO_Content})
+@TngPriority(21)
+@Test(groups={TngRunGroups.TNG_KATELLO_Content})
 public class PackageGroupTests extends KatelloCliTestBase {
 
 	protected static Logger log = Logger.getLogger(PackageGroupTests.class.getName());

@@ -1,7 +1,5 @@
 package com.redhat.qe.katello.tests.hammer.cli;
 
-import java.util.Arrays;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import com.redhat.qe.Assert;
@@ -48,7 +46,7 @@ public class ArchitectureTests extends KatelloCliTestBase {
 		Assert.assertFalse(res.getExitCode().intValue() == 0, "Check - return code");
 		
 		// @ TODO error message
-		//Assert.assertTrue(getOutput(res).contains(String.format(HammerArchitecture.ERR_NAME_EXISTS, name)),"Check - returned error string");
+		Assert.assertTrue(getOutput(res).contains(String.format(HammerArchitecture.ERR_NAME_EXISTS, name)),"Check - returned error string");
 	}
 	
 	@Test(description="info Architecture", dependsOnMethods={"testArchitecture_createExists"})
@@ -70,8 +68,7 @@ public class ArchitectureTests extends KatelloCliTestBase {
 		res = arch.update(new_name);
 		Assert.assertEquals(res.getExitCode().intValue(), 0, "Check - return code");
 		
-		// @ TODO error message
-		//Assert.assertTrue(getOutput(res).contains(String.format(HammerArchitecture.OUT_UPDATE, name)),"Check - returned output string");
+		Assert.assertTrue(getOutput(res).contains(HammerArchitecture.OUT_UPDATE),"Check - returned output string");
 	}
 	
 	@Test(description="list Architecture", dependsOnMethods={"testArchitecture_update"})
@@ -108,9 +105,7 @@ public class ArchitectureTests extends KatelloCliTestBase {
 		HammerArchitecture arch = new HammerArchitecture(cli_worker, new_name);
 		res = arch.delete();
 		Assert.assertTrue(res.getExitCode().intValue() == 0, "Check - return code");
-		
-		// @ TODO error message
-		//Assert.assertTrue(getOutput(res).contains(String.format(HammerArchitecture.OUT_DELETE, new_name)),"Check - returned output string");
+		Assert.assertTrue(getOutput(res).contains(HammerArchitecture.OUT_DELETE),"Check - returned output string");
 	}
 
 	@Test(description="update Architecture name not found", dependsOnMethods={"testArchitecture_delete"})
@@ -145,7 +140,8 @@ public class ArchitectureTests extends KatelloCliTestBase {
 		res = arch.cli_search(base_names[1]);
 		Assert.assertTrue(res.getExitCode().intValue() == 0, "Check - return code");
 		Assert.assertTrue(KatelloUtils.grepCLIOutput("Name", getOutput(res)).equals(base_names[1]), "Check - name is listed");
-		// TODO - add count == 1 check
+		String cnt = KatelloUtils.run_local(false, String.format("echo -e \"%s\"|grep \"Name:\"|wc -l",getOutput(res)));
+		Assert.assertTrue(cnt.equals("1"), "Count of returned archs must be 1.");
 	}
 	
 	@Test(description="list Architecture by order and pagination")
@@ -155,22 +151,16 @@ public class ArchitectureTests extends KatelloCliTestBase {
 		HammerArchitecture arch = new HammerArchitecture(cli_worker, null);
 		res = arch.cli_list("name", 1, 5);
 		Assert.assertTrue(res.getExitCode().intValue() == 0, "Check - return code");
-		String[] names = getOutput(res).trim().split("\n");
-		String[] sortedNames = Arrays.copyOf(names, names.length);
-		Arrays.sort(sortedNames);
-		
-		Assert.assertEquals(names.length, 5, "Count of returned archs must be 5.");
-		Assert.assertEquals(names, sortedNames, "Returned archs are sorted.");
+		String cnt = KatelloUtils.run_local(false, String.format("echo -e \"%s\"|grep \"Name:\"|wc -l",getOutput(res)));
+		Assert.assertTrue(cnt.equals("5"), "Count of returned archs must be 5.");
+		String name1 = KatelloUtils.grepCLIOutput("Name", getOutput(res), 1);
 		
 		res = arch.cli_list("name", 2, 5);
 		Assert.assertTrue(res.getExitCode().intValue() == 0, "Check - return code");
-		String[] second_names = getOutput(res).trim().split("\n");
-		String[] second_sortedNames = Arrays.copyOf(second_names, second_names.length);
-		Arrays.sort(second_sortedNames);
-		
-		Assert.assertEquals(second_names.length, 5, "Count of returned archs must be 5.");
-		Assert.assertEquals(second_names, second_sortedNames, "Returned archs are sorted.");
-		
-		Assert.assertEquals(sortedNames, second_sortedNames, "Returned archs in first and second list must not be the same.");
+		cnt = KatelloUtils.run_local(false, String.format("echo -e \"%s\"|grep \"Name:\"|wc -l",getOutput(res)));
+		Assert.assertTrue(cnt.equals("5"), "Count of returned archs must be 5.");
+		String name2 = KatelloUtils.grepCLIOutput("Name", getOutput(res), 1);
+
+		Assert.assertTrue(!name1.equals(name2), "Returned archs in first and second list must not be the same.");
 	}
 }
